@@ -16,10 +16,19 @@
 #define I2C_SCL_PIN 22
 #define I2C_SDA_PIN 21
 
-void setup() {
+const char* TZ_INFO    = "CST6CDT5,M3.2.0/02:00:00,M11.1.0/02:00:00";
+struct tm timeinfo;
 
+void setup() {
+    Serial.begin(115200);
+
+    setenv("TZ", TZ_INFO, 1);
+    tzset();
 }
 
 void loop() {
+    getLocalTime(&timeinfo, 100);
+    Serial.println(&timeinfo, "%Y-%m-%d %H:%M:%S  %Z");
 
+    delay(1000);
 }
