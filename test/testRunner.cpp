@@ -4,10 +4,15 @@ namespace Test_DisplayDriver {
     void runTests(void);
 }
 
+namespace Test_Clock {
+    void runTests(void);
+}
+
 void process() {
     UNITY_BEGIN();
 
     Test_DisplayDriver::runTests();
+    Test_Clock::runTests();
 
     UNITY_END();
 }

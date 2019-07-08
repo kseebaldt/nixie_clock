@@ -1,6 +1,13 @@
 #include <Arduino.h>
 #include "ArduinoWrapper.h"
 #include "DisplayDriver.h"
+#include "Clock.h"
+
+#include <Preferences.h>
+#include <WiFi.h>
+// #include <time.h>
+// #include <sys/time.h>
+#include "lwip/apps/sntp.h"
 
 #define DATA_PIN 16
 #define CLOCK_PIN 17
@@ -21,15 +28,32 @@
 #define I2C_SCL_PIN 22
 #define I2C_SDA_PIN 21
 
-const char* TZ_INFO    = "CST6CDT5,M3.2.0/02:00:00,M11.1.0/02:00:00";
-struct tm timeinfo;
+#define IS_SET(byte,bit) (((byte) & (1UL << (bit))) >> (bit))
 
-uint8_t digits[4] = {1, 3, 5, 7};
+const char* NTP_SERVER = "pool.ntp.org";
+const char* TZ_INFO    = "CST6CDT5,M3.2.0/02:00:00,M11.1.0/02:00:00";
 
 DisplayDriver driver(&arduino);
+Preferences preferences;
+Clock _clock;
+
+void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+    if(!sntp_enabled()){
+        configTzTime(TZ_INFO, NTP_SERVER);
+    }
+}
 
 void setup() {
-    // Serial.begin(115200);
+    Serial.begin(115200);
+
+    String ssid;
+    String password;
+
+    preferences.begin("nixie-clock", false);
+    ssid = preferences.getString("ssid");
+    password = preferences.getString("password");
+    preferences.end();
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
   
@@ -47,26 +71,24 @@ void setup() {
     ledcWrite(G_LED_CHANNEL, 256);
     ledcWrite(B_LED_CHANNEL, 256 - 100);
 
-    // setenv("TZ", TZ_INFO, 1);
-    // tzset();
+    setenv("TZ", TZ_INFO, 1);
+    tzset();
+
+    WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+    WiFi.begin(ssid.c_str(), password.c_str());
+
 }
 
 void loop() {
-  //  getLocalTime(&timeinfo, 100);
-  //  Serial.println(&timeinfo, "%Y-%m-%d %H:%M:%S  %Z");
+    _clock.tick();
+    Serial.println(&(_clock.now()), "%Y-%m-%d %H:%M:%S  %Z");
 
-    // put your main code here, to run repeatedly:
-//    driver.display(digits[0] + digits[1] * 10 + digits[2] * 100 + digits[3] * 1000);
-    driver.display(1234);
+    driver.display(_clock.displayValue());
 
-    unsigned long now = millis();
+    uint8_t displayFlags = _clock.displayFlags();
 
-    digitalWrite(CL0_PIN, now % 2000 < 1000);
-    digitalWrite(CL1_PIN, now % 2000 < 1000);
-
-   for (int i = 0; i < 4; ++i) {
-     digits[i] = (digits[i] + 1) % 10;
-   }
+    arduino.digitalWrite(CL0_PIN, IS_SET(displayFlags, 0));
+    arduino.digitalWrite(CL1_PIN, IS_SET(displayFlags, 1));
 
     delay(100);
 }
