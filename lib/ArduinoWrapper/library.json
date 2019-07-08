@@ -1,0 +1,12 @@
+{
+    "name": "ArduinoWrapper",
+    "keywords": "arduino, test",
+    "description": "Arduino Wrapper for Unit Testing",
+    "authors":
+    {
+        "name": "Kurtis Seebaldt",
+        "email": "kseebaldt@gmail.com"
+    },
+    "frameworks": "arduino",
+    "platforms": "*"
+}
