@@ -11,7 +11,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 12;
         timeinfo.tm_hour = 3;
@@ -22,7 +22,7 @@ namespace Test_Clock {
 
         tm currentTime = clock.now();
 
-        TEST_ASSERT_EQUAL(2019, currentTime.tm_year);
+        TEST_ASSERT_EQUAL(119, currentTime.tm_year);
         TEST_ASSERT_EQUAL(5, currentTime.tm_mon);
         TEST_ASSERT_EQUAL(12, currentTime.tm_mday);
         TEST_ASSERT_EQUAL(3, currentTime.tm_hour);
@@ -65,14 +65,14 @@ namespace Test_Clock {
 
         clock.setDateTime(timeinfo);
 
-        TEST_ASSERT_EQUAL(512, clock.date());
+        TEST_ASSERT_EQUAL(612, clock.date());
     }
 
     void test_date_2digitmonth(void) {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_mon = 11;
+        timeinfo.tm_mon = 10;
         timeinfo.tm_mday = 12;
 
         clock.setDateTime(timeinfo);
@@ -89,14 +89,14 @@ namespace Test_Clock {
 
         clock.setDateTime(timeinfo);
 
-        TEST_ASSERT_EQUAL(508, clock.date());
+        TEST_ASSERT_EQUAL(608, clock.date());
     }
 
     void test_year(void) {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
 
         clock.setDateTime(timeinfo);
 
@@ -107,7 +107,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -123,7 +123,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -133,14 +133,14 @@ namespace Test_Clock {
         clock.setDateTime(timeinfo);
         clock.setMode(DATE);
 
-        TEST_ASSERT_EQUAL(508, clock.displayValue());
+        TEST_ASSERT_EQUAL(608, clock.displayValue());
     }
 
     void test_display_YearMode(void) {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -172,7 +172,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -188,7 +188,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -204,7 +204,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;
@@ -221,7 +221,7 @@ namespace Test_Clock {
         Clock clock;
 
         tm timeinfo;
-        timeinfo.tm_year = 2019;
+        timeinfo.tm_year = 119;
         timeinfo.tm_mon = 5;
         timeinfo.tm_mday = 8;
         timeinfo.tm_hour = 12;

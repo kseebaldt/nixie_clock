@@ -5,11 +5,11 @@ uint16_t Clock::time() {
 }
 
 uint16_t Clock::date() {
-    return _timeinfo.tm_mon * 100 + _timeinfo.tm_mday;
+    return (_timeinfo.tm_mon + 1) * 100 + _timeinfo.tm_mday;
 }
 
 uint16_t Clock::year() {
-    return _timeinfo.tm_year;
+    return _timeinfo.tm_year + 1900;
 }
 
 void Clock::setDateTime(tm timeinfo) {

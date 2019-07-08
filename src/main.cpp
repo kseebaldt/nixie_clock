@@ -76,7 +76,6 @@ void setup() {
 
     WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
     WiFi.begin(ssid.c_str(), password.c_str());
-
 }
 
 void loop() {
