@@ -8,11 +8,16 @@ namespace Test_Clock {
     void runTests(void);
 }
 
+namespace Test_Config {
+    void runTests(void);
+}
+
 void process() {
     UNITY_BEGIN();
 
     Test_DisplayDriver::runTests();
     Test_Clock::runTests();
+    Test_Config::runTests();
 
     UNITY_END();
 }
