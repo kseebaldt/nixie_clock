@@ -28,34 +28,28 @@ void ArduinoWrapper::shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrde
     ::shiftOut(dataPin, clockPin, bitOrder, val);
 }
 
+double ArduinoWrapper::ledcSetup(uint8_t channel, double freq, uint8_t resolution_bits) {
+    return ::ledcSetup(channel, freq, resolution_bits);
+}
+
+void ArduinoWrapper::ledcWrite(uint8_t channel, uint32_t duty) {
+    ::ledcWrite(channel, duty);
+}
+
+void ArduinoWrapper::ledcAttachPin(uint8_t pin, uint8_t channel) {
+    ::ledcAttachPin(pin, channel);
+}
+
 #else
 
-uint8_t _fake_pinModes[40] = {0};
-uint8_t _fake_pinValues[40] = {0};
-
-unsigned long _fake_millis = 0;
-
-void ArduinoWrapper::pinMode(uint8_t pin, uint8_t mode) {
-    _fake_pinModes[pin] = mode;
-}
-
-void ArduinoWrapper::digitalWrite(uint8_t pin, uint8_t val) {
-    _fake_pinValues[pin] = val;
-}
-
-int ArduinoWrapper::digitalRead(uint8_t pin) {
-    return _fake_pinValues[pin];
-}
-
-void ArduinoWrapper::delay(unsigned long millis) {
-}
-
-unsigned long ArduinoWrapper::millis(void) {
-    return _fake_millis;
-}
-
-void ArduinoWrapper::shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val) {
-
-}
+void ArduinoWrapper::pinMode(uint8_t pin, uint8_t mode) {}
+void ArduinoWrapper::digitalWrite(uint8_t pin, uint8_t val) {}
+int ArduinoWrapper::digitalRead(uint8_t pin) { return 0; }
+void ArduinoWrapper::delay(unsigned long millis) {}
+unsigned long ArduinoWrapper::millis(void) { return 0; }
+void ArduinoWrapper::shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val) {}
+double ArduinoWrapper::ledcSetup(uint8_t channel, double freq, uint8_t resolution_bits) { return 0.0; }
+void ArduinoWrapper::ledcWrite(uint8_t channel, uint32_t duty) {}
+void ArduinoWrapper::ledcAttachPin(uint8_t pin, uint8_t channel) {}
 
 #endif
