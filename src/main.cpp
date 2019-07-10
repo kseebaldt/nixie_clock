@@ -47,6 +47,17 @@ void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
     }
 }
 
+void configChanged(Config& config, Config::Types type) {
+    switch(type) {
+        case Config::Types::TIME_ZONE:
+            setenv("TZ", config.timeZone().c_str(), 1);
+            tzset();
+            break;
+        default:
+            break;
+    }
+}
+
 void setup() {
     Serial.begin(115200);
 
