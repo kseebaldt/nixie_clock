@@ -18,7 +18,11 @@ void Config::setName(std::string name) {
 
     _storage.run([name] (StorageFunctions& f) {
         f.putString("name", name);
-    });   
+    });
+
+    if (_callback) {
+        _callback(*this, Types::NAME);
+    }
 }
 
 void Config::setSsid(std::string ssid) {
@@ -26,7 +30,11 @@ void Config::setSsid(std::string ssid) {
 
     _storage.run([ssid] (StorageFunctions& f) {
         f.putString("ssid", ssid);
-    }); 
+    });
+
+    if (_callback) {
+        _callback(*this, Types::SSID);
+    }
 }
 
 void Config::setPassword(std::string password) {
@@ -34,7 +42,11 @@ void Config::setPassword(std::string password) {
 
     _storage.run([password] (StorageFunctions& f) {
         f.putString("password", password);
-    }); 
+    });
+
+    if (_callback) {
+        _callback(*this, Types::PASSWORD);
+    }
 }
 
 void Config::setTimeZone(std::string timeZone) {
@@ -42,7 +54,11 @@ void Config::setTimeZone(std::string timeZone) {
 
     _storage.run([timeZone] (StorageFunctions& f) {
         f.putString("timezone", timeZone);
-    }); 
+    });
+
+    if (_callback) {
+        _callback(*this, Types::TIME_ZONE);
+    }    
 }
 
 void Config::setLedColor(uint32_t color) {
@@ -50,5 +66,13 @@ void Config::setLedColor(uint32_t color) {
 
     _storage.run([color] (StorageFunctions& f) {
         f.putUInt("ledcolor", color);
-    }); 
+    });
+
+    if (_callback) {
+        _callback(*this, Types::LED_COLOR);
+    }
+}
+
+void Config::notifyOnChange(std::function<void (Config& config, Types type)> func) {
+    _callback = func;
 }

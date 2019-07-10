@@ -2,10 +2,19 @@
 #define _CONFIG_H_
 
 #include <string>
+#include <functional>
 #include "Storage.h"
 
 class Config {
     public:
+        enum class Types {
+            NAME,
+            SSID,
+            PASSWORD,
+            TIME_ZONE,
+            LED_COLOR
+        };
+
         Config(Storage& storage);
 
         void init();
@@ -22,6 +31,8 @@ class Config {
         void setTimeZone(std::string timeZone);
         void setLedColor(uint32_t color);
 
+        void notifyOnChange(std::function<void (Config& config, Types type)> func);
+
     private:
         std::string _name;
         std::string _ssid;
@@ -30,6 +41,8 @@ class Config {
         uint32_t _ledColor;
 
         Storage& _storage;
+
+        std::function<void (Config& config, Types type)> _callback;
 };
 
 #endif /* _CONFIG_H_ */

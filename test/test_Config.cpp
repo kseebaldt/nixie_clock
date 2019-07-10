@@ -89,46 +89,81 @@ namespace Test_Config {
     void test_setName() {
         Config config(storage);
 
+        bool called = false;
+        config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+            called = true;
+            TEST_ASSERT_EQUAL(Config::Types::NAME, type);
+        });
+
         config.setName("new-name");
 
         TEST_ASSERT_EQUAL_STRING("new-name", config.name().c_str());
         TEST_ASSERT_EQUAL_STRING("new-name", storage.getString("name").c_str());
+        TEST_ASSERT(called);
     }
 
     void test_setSsid() {
         Config config(storage);
 
+        bool called = false;
+        config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+            called = true;
+            TEST_ASSERT_EQUAL(Config::Types::SSID, type);
+        });
+
         config.setSsid("new-ssid");
 
         TEST_ASSERT_EQUAL_STRING("new-ssid", config.ssid().c_str());
         TEST_ASSERT_EQUAL_STRING("new-ssid", storage.getString("ssid").c_str());
+        TEST_ASSERT(called);
     }
 
     void test_setPassword() {
         Config config(storage);
 
+        bool called = false;
+        config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+            called = true;
+            TEST_ASSERT_EQUAL(Config::Types::PASSWORD, type);
+        });        
+
         config.setPassword("new-password");
 
         TEST_ASSERT_EQUAL_STRING("new-password", config.password().c_str());
         TEST_ASSERT_EQUAL_STRING("new-password", storage.getString("password").c_str());
+        TEST_ASSERT(called);
     }
 
     void test_setTimeZone() {
         Config config(storage);
 
+        bool called = false;
+        config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+            called = true;
+            TEST_ASSERT_EQUAL(Config::Types::TIME_ZONE, type);
+        });
+
         config.setTimeZone("new-timezone");
 
         TEST_ASSERT_EQUAL_STRING("new-timezone", config.timeZone().c_str());
         TEST_ASSERT_EQUAL_STRING("new-timezone", storage.getString("timezone").c_str());
+        TEST_ASSERT(called);
     }
 
     void test_setLedColor() {
         Config config(storage);
 
+        bool called = false;
+        config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+            called = true;
+            TEST_ASSERT_EQUAL(Config::Types::LED_COLOR, type);
+        });
+
         config.setLedColor(0x00654321);
 
         TEST_ASSERT_EQUAL(0x00654321, config.ledColor());
         TEST_ASSERT_EQUAL(0x00654321, storage.getUInt("ledcolor"));
+        TEST_ASSERT(called);
     }
 
     void runTests() {
