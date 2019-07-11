@@ -1,33 +1,30 @@
-#include <unity.h>
+#include "catch.hpp"
+#include "fakeit.hpp"
 
 #include "DisplayDriver.h"
 #include "ArduinoWrapper.h"
-#include "fakeit.hpp"
 
 using namespace fakeit;
 
-namespace Test_DisplayDriver {
+TEST_CASE("DisplayDriver", "[display_driver]") {
     Mock<IArduino> mock;
     IArduino &arduino = mock.get();
     DisplayDriver driver(&arduino);
 
-    void test_initPins() {
-        mock.Reset();
+    Fake(Method(mock, pinMode));
+    driver.initPins(3, 4, 5);
 
-        Fake(Method(mock, pinMode));
-        driver.initPins(5, 7, 9);
-
+    SECTION("initPins sets pinMode") {
+        Verify(Method(mock, pinMode).Using(3, OUTPUT));
+        Verify(Method(mock, pinMode).Using(4, OUTPUT));
         Verify(Method(mock, pinMode).Using(5, OUTPUT));
-        Verify(Method(mock, pinMode).Using(7, OUTPUT));
-        Verify(Method(mock, pinMode).Using(9, OUTPUT));
+
+        SUCCEED();
     }
 
-    void test_display_writesToLatchPins() {
-        Fake(Method(mock, pinMode));
+    mock.Reset();
 
-        driver.initPins(3, 4, 5);
-        mock.Reset();
-
+    SECTION("display writes to latch pins") {
         Fake(Method(mock, digitalWrite));
         Fake(Method(mock, shiftOut));
 
@@ -39,14 +36,11 @@ namespace Test_DisplayDriver {
             Method(mock, shiftOut) + 
             Method(mock, digitalWrite).Using(5, HIGH)
         );
+
+        SUCCEED();  
     }
 
-    void test_display_shiftsBytes() {
-        Fake(Method(mock, pinMode));
-
-        driver.initPins(3, 4, 5);
-        mock.Reset();
-
+    SECTION("display shifts bytes") {
         Fake(Method(mock, digitalWrite));
         Fake(Method(mock, shiftOut));
 
@@ -55,12 +49,8 @@ namespace Test_DisplayDriver {
         Verify(
             Method(mock, shiftOut).Using(3, 4, MSBFIRST, 67) +
             Method(mock, shiftOut).Using(3, 4, MSBFIRST, 33)
-        );
-    }
+        );  
 
-    void runTests() {
-        RUN_TEST(test_initPins);
-        RUN_TEST(test_display_writesToLatchPins);
-        RUN_TEST(test_display_shiftsBytes);
+        SUCCEED();     
     }
 }

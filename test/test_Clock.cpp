@@ -1,255 +1,232 @@
+#include "catch.hpp"
+
 #define private public
 
 #include <Clock.h>
-#include <unity.h>
 
-#include <stdio.h>
+TEST_CASE("setDateTime", "[clock]") {
+    Clock clock;
 
-namespace Test_Clock {
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 12;
+    timeinfo.tm_hour = 3;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
 
-    void test_setDateTime(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 12;
-        timeinfo.tm_hour = 3;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
+    tm currentTime = clock.now();
 
-        clock.setDateTime(timeinfo);
+    REQUIRE(currentTime.tm_year == 119);
+    REQUIRE(currentTime.tm_mon == 5);
+    REQUIRE(currentTime.tm_mday == 12);
+    REQUIRE(currentTime.tm_hour == 3);
+    REQUIRE(currentTime.tm_min == 45);
+    REQUIRE(currentTime.tm_sec == 56);
+}
 
-        tm currentTime = clock.now();
+ TEST_CASE("time shown 1 digit hour", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(119, currentTime.tm_year);
-        TEST_ASSERT_EQUAL(5, currentTime.tm_mon);
-        TEST_ASSERT_EQUAL(12, currentTime.tm_mday);
-        TEST_ASSERT_EQUAL(3, currentTime.tm_hour);
-        TEST_ASSERT_EQUAL(45, currentTime.tm_min);
-        TEST_ASSERT_EQUAL(56, currentTime.tm_sec);
-    }
+    tm timeinfo;
+    timeinfo.tm_hour = 3;
+    timeinfo.tm_min = 45;
 
-    void test_time_1digithour(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_hour = 3;
-        timeinfo.tm_min = 45;
+    tm currentTime = clock.now();        
 
-        clock.setDateTime(timeinfo);
+    REQUIRE(clock.time() == 345);
+}
 
-        tm currentTime = clock.now();        
+ TEST_CASE("time shows 2 digit hour", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(345, clock.time());
-    }
+    tm timeinfo;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
 
-    void test_time_2digithour(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
+    REQUIRE(clock.time() == 1245);
+}
 
-        clock.setDateTime(timeinfo);
+TEST_CASE("date shows 1 digit month", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(1245, clock.time());
-    }
+    tm timeinfo;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 12;
 
-    void test_date_1digitmonth(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 12;
+    REQUIRE(clock.date() == 612);
+}
 
-        clock.setDateTime(timeinfo);
+TEST_CASE("date shows 2 digit month", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(612, clock.date());
-    }
+    tm timeinfo;
+    timeinfo.tm_mon = 10;
+    timeinfo.tm_mday = 12;
 
-    void test_date_2digitmonth(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_mon = 10;
-        timeinfo.tm_mday = 12;
+    REQUIRE(clock.date() == 1112);
+}
 
-        clock.setDateTime(timeinfo);
+TEST_CASE("date shows 1 digit day", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(1112, clock.date());
-    }
+    tm timeinfo;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
 
-    void test_date_1digitday(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
+    REQUIRE(clock.date() == 608);
+}
 
-        clock.setDateTime(timeinfo);
+TEST_CASE("year", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(608, clock.date());
-    }
+    tm timeinfo;
+    timeinfo.tm_year = 119;
 
-    void test_year(void) {
-        Clock clock;
+    clock.setDateTime(timeinfo);
 
-        tm timeinfo;
-        timeinfo.tm_year = 119;
+    REQUIRE(clock.year() == 2019);
+}
 
-        clock.setDateTime(timeinfo);
+TEST_CASE("display shows time in Time mode", "[clock]") {
+    Clock clock;
 
-        TEST_ASSERT_EQUAL(2019, clock.year());
-    }
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.displayValue() == 1245);
+}
 
-    void test_display_TimeMode(void) {
-        Clock clock;
+TEST_CASE("display shows date in Date mode", "[clock]") {
+    Clock clock;
 
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-
-        TEST_ASSERT_EQUAL(1245, clock.displayValue());
-    }
-
-    void test_display_DateMode(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-        clock.setMode(DATE);
-
-        TEST_ASSERT_EQUAL(608, clock.displayValue());
-    }
-
-    void test_display_YearMode(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-        clock.setMode(YEAR);
-
-        TEST_ASSERT_EQUAL(2019, clock.displayValue());
-    }
-
-    void test_nextMode(void) {
-        Clock clock;
-
-        TEST_ASSERT_EQUAL(TIME, clock.mode());
-
-        clock.nextMode();
-        TEST_ASSERT_EQUAL(DATE, clock.mode());
-
-        clock.nextMode();
-        TEST_ASSERT_EQUAL(YEAR, clock.mode());
-
-        clock.nextMode();
-        TEST_ASSERT_EQUAL(TIME, clock.mode());
-    }
-
-    void test_displayFlags_time_shows_CL0_CL1(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-
-        TEST_ASSERT_EQUAL(3, clock.displayFlags());
-    }
-
-    void test_displayFlags_time_showsNoneOnOddSeconds(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 57;
-
-        clock.setDateTime(timeinfo);
-
-        TEST_ASSERT_EQUAL(0, clock.displayFlags());
-    }
-
-    void test_displayFlags_date_shows_CL1(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-        clock.setMode(DATE);
-
-        TEST_ASSERT_EQUAL(2, clock.displayFlags());
-    }
-
-    void test_displayFlags_year_showsNone(void) {
-        Clock clock;
-
-        tm timeinfo;
-        timeinfo.tm_year = 119;
-        timeinfo.tm_mon = 5;
-        timeinfo.tm_mday = 8;
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 45;
-        timeinfo.tm_sec = 56;
-
-        clock.setDateTime(timeinfo);
-        clock.setMode(YEAR);
-
-        TEST_ASSERT_EQUAL(0, clock.displayFlags());
-    }
-
-    void runTests() {
-        RUN_TEST(test_setDateTime);
-        RUN_TEST(test_time_1digithour);
-        RUN_TEST(test_time_2digithour);
-        RUN_TEST(test_date_1digitmonth);
-        RUN_TEST(test_date_2digitmonth);
-        RUN_TEST(test_date_1digitday);
-        RUN_TEST(test_year);
-        RUN_TEST(test_display_TimeMode);
-        RUN_TEST(test_display_DateMode);
-        RUN_TEST(test_display_YearMode);
-
-        RUN_TEST(test_nextMode);
-        RUN_TEST(test_displayFlags_time_shows_CL0_CL1);
-        RUN_TEST(test_displayFlags_time_showsNoneOnOddSeconds);
-        RUN_TEST(test_displayFlags_date_shows_CL1);
-        RUN_TEST(test_displayFlags_year_showsNone);
-    }
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+    clock.setMode(DATE);
+
+    REQUIRE(clock.displayValue() == 608);
+}
+
+TEST_CASE("display shows year in Year mode", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+    clock.setMode(YEAR);
+
+    REQUIRE(clock.displayValue() == 2019);
+}
+
+TEST_CASE("nextMode cycles through modes", "[clock]") {
+    Clock clock;
+
+    REQUIRE(clock.mode() == TIME);
+
+    clock.nextMode();
+    REQUIRE(clock.mode() == DATE);
+
+    clock.nextMode();
+    REQUIRE(clock.mode() == YEAR);
+
+    clock.nextMode();
+    REQUIRE(clock.mode() == TIME);
+}
+
+TEST_CASE("displayFlags in time mode shows CL0 & CL1", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.displayFlags() == 3);
+}
+
+TEST_CASE("displayFlags in time mode hides CL0 & CL1 on odd seconds", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 57;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.displayFlags() == 0);
+}
+
+TEST_CASE("displayFlags in date mode shows CL1", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+    clock.setMode(DATE);
+
+    REQUIRE(clock.displayFlags() == 2);
+}
+
+TEST_CASE("displayFlags in year mode hides CL0 & CL1", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_year = 119;
+    timeinfo.tm_mon = 5;
+    timeinfo.tm_mday = 8;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+    timeinfo.tm_sec = 56;
+
+    clock.setDateTime(timeinfo);
+    clock.setMode(YEAR);
+
+    REQUIRE(clock.displayFlags() == 0);
 }

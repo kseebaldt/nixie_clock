@@ -5,6 +5,7 @@
 
 #include "ArduinoWrapper.h"
 #include "DisplayDriver.h"
+#include "LedDriver.h"
 #include "Clock.h"
 #include "BLE_Server.h"
 #include "NVStorage.h"
@@ -22,9 +23,6 @@
 #define R_LED_PIN 25
 #define G_LED_PIN 26
 #define B_LED_PIN 27
-#define R_LED_CHANNEL 0
-#define G_LED_CHANNEL 1
-#define B_LED_CHANNEL 2
 
 #define I2C_SCL_PIN 22
 #define I2C_SDA_PIN 21
@@ -34,6 +32,7 @@
 const char* NTP_SERVER = "pool.ntp.org";
 
 DisplayDriver driver(&arduino);
+LedDriver ledDriver(&arduino);
 Clock _clock;
 
 NVStorage storage("nixie-clock");
@@ -65,20 +64,10 @@ void setup() {
     bleServer.init();
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
+    ledDriver.initPins(R_LED_PIN, G_LED_PIN, B_LED_PIN);
   
     pinMode(CL0_PIN, OUTPUT);
     pinMode(CL1_PIN, OUTPUT);
-
-    ledcSetup(R_LED_CHANNEL, 5000, 8);
-    ledcAttachPin(R_LED_PIN, R_LED_CHANNEL);
-    ledcSetup(G_LED_CHANNEL, 5000, 8);
-    ledcAttachPin(G_LED_PIN, G_LED_CHANNEL);
-    ledcSetup(B_LED_CHANNEL, 5000, 8);
-    ledcAttachPin(B_LED_PIN, B_LED_CHANNEL);
-
-    ledcWrite(R_LED_CHANNEL, 256 - 100);
-    ledcWrite(G_LED_CHANNEL, 256);
-    ledcWrite(B_LED_CHANNEL, 256 - 100);
 
     setenv("TZ", config.timeZone().c_str(), 1);
     tzset();
@@ -94,6 +83,7 @@ void loop() {
     Serial.println(&(_clock.now()), "%Y-%m-%d %H:%M:%S  %Z");
 
     driver.display(_clock.displayValue());
+    ledDriver.showColor(config.ledColor());
 
     uint8_t displayFlags = _clock.displayFlags();
 
