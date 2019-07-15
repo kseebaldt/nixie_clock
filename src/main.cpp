@@ -10,6 +10,7 @@
 #include "BLE_Server.h"
 #include "NVStorage.h"
 #include "Config.h"
+#include "Button.h"
 
 #define DATA_PIN 16
 #define CLOCK_PIN 17
@@ -33,6 +34,7 @@ const char* NTP_SERVER = "pool.ntp.org";
 
 DisplayDriver driver(&arduino);
 LedDriver ledDriver(&arduino);
+Button button(&arduino);
 Clock _clock;
 
 NVStorage storage("nixie-clock");
@@ -65,6 +67,10 @@ void setup() {
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
     ledDriver.initPins(R_LED_PIN, G_LED_PIN, B_LED_PIN);
+    button.init(DISPLAY_MODE_PIN);
+    button.onPress([] (Button& button) {
+        _clock.nextMode();
+    });
   
     pinMode(CL0_PIN, OUTPUT);
     pinMode(CL1_PIN, OUTPUT);
