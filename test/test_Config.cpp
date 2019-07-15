@@ -86,7 +86,7 @@ TEST_CASE("setName", "[config]") {
     Config config(storage);
 
     bool called = false;
-    config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+    config.notifyOnChange([&called] (Config& config, Config::Types type) {
         called = true;
         CHECK(type == Config::Types::NAME);
     });
@@ -103,7 +103,7 @@ TEST_CASE("setSsid", "[config]") {
     Config config(storage);
 
     bool called = false;
-    config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+    config.notifyOnChange([&called] (Config& config, Config::Types type) {
         called = true;
         CHECK(type == Config::Types::SSID);
     });
@@ -120,7 +120,7 @@ TEST_CASE("setPassword", "[config]") {
     Config config(storage);
 
     bool called = false;
-    config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+    config.notifyOnChange([&called] (Config& config, Config::Types type) {
         called = true;
         CHECK(type == Config::Types::PASSWORD);
     });        
@@ -137,7 +137,7 @@ TEST_CASE("setTimeZone", "[config]") {
     Config config(storage);
 
     bool called = false;
-    config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+    config.notifyOnChange([&called] (Config& config, Config::Types type) {
         called = true;
         CHECK(type == Config::Types::TIME_ZONE);
     });
@@ -154,7 +154,7 @@ TEST_CASE("setLedColor", "[config]") {
     Config config(storage);
 
     bool called = false;
-    config.notifyOnChange([&called] (Config& config, Config::Types type) mutable {
+    config.notifyOnChange([&called] (Config& config, Config::Types type) {
         called = true;
         CHECK(type == Config::Types::LED_COLOR);
     });
