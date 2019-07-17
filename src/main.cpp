@@ -19,8 +19,8 @@
 
 #define DISPLAY_MODE_PIN 19
 
-#define CL0_PIN 2
-#define CL1_PIN 4
+#define CL0_PIN 4
+#define CL1_PIN 2
 
 #define R_LED_PIN 25
 #define G_LED_PIN 26
@@ -83,6 +83,11 @@ void configChanged(Config& config, Config::Types type) {
             setenv("TZ", config.timeZone().c_str(), 1);
             tzset();
             break;
+        case Config::Types::SSID:
+        case Config::Types::PASSWORD:
+            WiFi.disconnect();
+            WiFi.begin(config.ssid().c_str(), config.password().c_str());
+            break;
         default:
             break;
     }
@@ -96,11 +101,12 @@ void setup() {
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
     ledDriver.initPins(R_LED_PIN, G_LED_PIN, B_LED_PIN);
-    button.init(DISPLAY_MODE_PIN);
+    button.init(DISPLAY_MODE_PIN, 500);
     button.onPress([] (Button& button) {
+        Serial.printf("BUTTON: %d\n", button.state());
         _clock.nextMode();
     });
-  
+
     pinMode(CL0_PIN, OUTPUT);
     pinMode(CL1_PIN, OUTPUT);
 
@@ -114,6 +120,7 @@ void setup() {
 void loop() {
     ArduinoOTA.handle();
 
+    button.tick();
     _clock.tick();
     bleServer.currentTimeService().update(_clock.now());
 
