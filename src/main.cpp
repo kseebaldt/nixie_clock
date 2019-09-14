@@ -12,6 +12,7 @@
 #include "NVStorage.h"
 #include "Config.h"
 #include "Button.h"
+#include "DS3231.h"
 
 #define DATA_PIN 16
 #define CLOCK_PIN 17
@@ -41,6 +42,7 @@ Clock _clock;
 NVStorage storage("nixie-clock");
 Config config(storage);
 BLE::Server bleServer(config);
+DS3231 rtc;
 
 void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -98,12 +100,18 @@ void setup() {
 
     config.init();
     bleServer.init();
+    rtc.begin();
+
+    // set clock from rtc
+    tm timeinfo = rtc.now();
+    time_t t = mktime(&timeinfo);
+    struct timeval now = { .tv_sec = t };
+    settimeofday(&now, NULL);
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
     ledDriver.initPins(R_LED_PIN, G_LED_PIN, B_LED_PIN);
     button.init(DISPLAY_MODE_PIN, 200);
     button.onPress([] (Button& button) {
-        Serial.printf("BUTTON: %d\n", button.state());
         _clock.nextMode();
     });
 
@@ -122,9 +130,16 @@ void loop() {
 
     button.tick();
     _clock.tick();
-    bleServer.currentTimeService().update(_clock.now());
 
-    Serial.println(&(_clock.now()), "%Y-%m-%d %H:%M:%S  %Z");
+    tm timeinfo;
+    time_t now;
+    ::time(&now);
+    ::gmtime_r(&now, &timeinfo);
+    if (timeinfo.tm_year > 100) {
+      rtc.adjust(timeinfo);
+    }
+
+    bleServer.currentTimeService().update(_clock.now());
 
     driver.display(_clock.displayValue());
     ledDriver.showColor(config.ledColor());
