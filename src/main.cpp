@@ -101,7 +101,7 @@ void setup() {
 
     driver.initPins(DATA_PIN, CLOCK_PIN, LATCH_PIN);
     ledDriver.initPins(R_LED_PIN, G_LED_PIN, B_LED_PIN);
-    button.init(DISPLAY_MODE_PIN, 500);
+    button.init(DISPLAY_MODE_PIN, 200);
     button.onPress([] (Button& button) {
         Serial.printf("BUTTON: %d\n", button.state());
         _clock.nextMode();

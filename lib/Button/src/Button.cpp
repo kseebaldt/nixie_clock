@@ -5,11 +5,11 @@ Button::Button(IArduino *arduino) : _arduino(arduino) {}
 void Button::init(uint8_t pin, uint16_t debounceDelay) {
     _pin = pin;
     _debounceDelay = debounceDelay;
-    _state = LOW;
-    _lastState = LOW;
+    _state = HIGH;
+    _lastState = HIGH;
     _lastDebounceTime = 0;
 
-    _arduino->pinMode(_pin, INPUT);
+    _arduino->pinMode(_pin, INPUT_PULLUP);
 }
 
 void Button::onPress(std::function<void (Button &b)> callback, uint16_t repeatTime) {
@@ -25,7 +25,7 @@ void Button::tick() {
     unsigned long now = _arduino->millis();
 
     int reading = _arduino->digitalRead(_pin);
-
+    
     if (reading != _lastState) {
         _lastDebounceTime = now;
     }
@@ -38,7 +38,7 @@ void Button::tick() {
         }
     }
 
-    if (_state == HIGH && _callback != NULL) {
+    if (_state == LOW && _callback != NULL) {
         if (_lastCallBackTime == 0 ||
             (_repeatTime != 0 && now - _lastCallBackTime >= _repeatTime)) {
             _callback(*this);
