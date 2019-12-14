@@ -53,6 +53,80 @@ TEST_CASE("setDateTime", "[clock]") {
     REQUIRE(clock.time() == 1245);
 }
 
+ TEST_CASE("time shows midnight", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 0;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.time() == 1245);
+}
+
+ TEST_CASE("time shows 2 digit hour PM", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 14;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.time() == 245);
+}
+
+TEST_CASE("time24 shown 1 digit hour", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 3;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    tm currentTime = clock.now();        
+
+    REQUIRE(clock.time24() == 345);
+}
+
+ TEST_CASE("time24 shows 2 digit hour", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 12;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.time24() == 1245);
+}
+
+ TEST_CASE("time24 shows midnight", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 0;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.time24() == 45);
+}
+
+TEST_CASE("time24 shows 2 digit hour PM", "[clock]") {
+    Clock clock;
+
+    tm timeinfo;
+    timeinfo.tm_hour = 14;
+    timeinfo.tm_min = 45;
+
+    clock.setDateTime(timeinfo);
+
+    REQUIRE(clock.time24() == 1445);
+}
+
 TEST_CASE("date shows 1 digit month", "[clock]") {
     Clock clock;
 
@@ -154,6 +228,9 @@ TEST_CASE("nextMode cycles through modes", "[clock]") {
     Clock clock;
 
     REQUIRE(clock.mode() == TIME);
+
+    clock.nextMode();
+    REQUIRE(clock.mode() == TIME24);
 
     clock.nextMode();
     REQUIRE(clock.mode() == DATE);

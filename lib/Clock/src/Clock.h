@@ -7,6 +7,7 @@
 
 enum ClockMode {
     TIME,
+    TIME24,
     DATE,
     YEAR
 };
@@ -19,6 +20,7 @@ class Clock {
         void tick();
 
         uint16_t time();
+        uint16_t time24();
         uint16_t date();
         uint16_t year();
 
