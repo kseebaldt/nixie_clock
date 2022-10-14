@@ -19,6 +19,7 @@ jobs:
           python-version: "3.9"
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
-
-      - name: Build PlatformIO Project
-        run: pio run
+      - name: Run native tests
+        run: pio test -e native
+      - name: Build esp32
+        run: pio run -e esp32dev
