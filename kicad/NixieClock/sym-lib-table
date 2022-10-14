@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name "NixieClock_Display")(type "KiCad")(uri "${KIPRJMOD}/NixieClock_Display.kicad_sym")(options "")(descr ""))
+  (lib (name "NixieClock_Logic")(type "KiCad")(uri "${KIPRJMOD}/NixieClock_Logic.kicad_sym")(options "")(descr ""))
+  (lib (name "NixieClock")(type "KiCad")(uri "${KIPRJMOD}/NixieClock.kicad_sym")(options "")(descr ""))
+)
