@@ -121,7 +121,7 @@ void setup() {
     setenv("TZ", config.timeZone().c_str(), 1);
     tzset();
 
-    WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+    WiFi.onEvent(WiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
     WiFi.begin(config.ssid().c_str(), config.password().c_str());
 }
 
