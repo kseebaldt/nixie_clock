@@ -1,0 +1,33 @@
+{
+    "name": "cd4511",
+    "author": "",
+    "pins": [
+      "D1",
+      "D2",
+      "nLT",
+      "nBL",
+      "nLE",
+      "D3",
+      "D0",
+      "GND",
+      "e",
+      "d",
+      "c",
+      "b",
+      "a",
+      "g",
+      "f",
+      "VDD"
+    ],
+    "controls": [
+      {
+        "id": "value",
+        "label": "Value",
+        "type": "range",
+        "default": 0,
+        "min": 0,
+        "max": 15,
+        "step": 1
+      }
+    ]
+  }
